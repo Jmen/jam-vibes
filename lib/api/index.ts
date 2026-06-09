@@ -1,4 +1,4 @@
-import { request, RequestOptions } from "./client";
+import { request, requestMultipart, RequestOptions } from "./client";
 import {
   credentialsSchema,
   sessionResponseSchema,
@@ -9,6 +9,11 @@ import {
   ForgotPassword,
   ResetPassword,
 } from "@/app/api/auth/schema";
+import {
+  profileResponseSchema,
+  updateProfileSchema,
+  UpdateProfile,
+} from "@/app/api/my/profile/schema";
 
 export { ApiError } from "./client";
 export type { RequestOptions } from "./client";
@@ -60,6 +65,33 @@ export class ApiClient {
         { method: "POST", body: resetPasswordSchema.parse(input) },
         this.options,
       ),
+  };
+
+  my = {
+    profile: {
+      get: () =>
+        request(profileResponseSchema, "/api/my/profile", {}, this.options),
+
+      update: (input: UpdateProfile) =>
+        request(
+          profileResponseSchema,
+          "/api/my/profile",
+          { method: "PUT", body: updateProfileSchema.parse(input) },
+          this.options,
+        ),
+
+      uploadAvatar: (file: Blob, fileName = "avatar.png") => {
+        const formData = new FormData();
+        formData.append("file", file, fileName);
+
+        return requestMultipart(
+          profileResponseSchema,
+          "/api/my/profile/avatar",
+          formData,
+          this.options,
+        );
+      },
+    },
   };
 }
 
