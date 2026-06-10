@@ -3,13 +3,13 @@ import { ApiHandlerBuilder, Context } from "../../apiHandlerBuilder";
 import { createResponse } from "../../apiResponse";
 import { getTypedBody } from "../../wrappers/withValidation";
 import { createCookieClient } from "@/lib/supabase/clients/server";
-import { credentialsSchema } from "../schema";
+import { registerSchema } from "../schema";
 import { registerCommand } from "../commands";
 
 export const POST = new ApiHandlerBuilder()
-  .validateBody(credentialsSchema)
+  .validateBody(registerSchema)
   .build(async (req: NextRequest, context: Context) => {
-    const body = getTypedBody(context, credentialsSchema);
+    const body = getTypedBody(context, registerSchema);
 
     const supabase = await createCookieClient();
 

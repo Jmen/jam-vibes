@@ -24,6 +24,27 @@ export async function getProfileRow(
   return ok(data);
 }
 
+export async function isUsernameTaken(
+  username: string,
+  supabase: SupabaseClient,
+): Promise<Result<boolean>> {
+  // ilike is case-insensitive equality here, matching the unique index on
+  // lower(username); escape its wildcards so "a_b" cannot match "axb"
+  const pattern = username.replace(/[\\%_]/g, "\\$&");
+
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("user_id")
+    .ilike("username", pattern)
+    .limit(1);
+
+  if (error) {
+    return err("username_check_failed", error.message, ErrorCode.SERVER_ERROR);
+  }
+
+  return ok(data.length > 0);
+}
+
 export async function updateUsername(
   userId: string,
   username: string,

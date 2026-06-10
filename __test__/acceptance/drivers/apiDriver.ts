@@ -1,5 +1,5 @@
 import { ApiClient } from "@/lib/api";
-import { Credentials, Session } from "@/app/api/auth/schema";
+import { Credentials, Register, Session } from "@/app/api/auth/schema";
 import { config } from "../config";
 
 // Protocol driver: converts DSL interactions into real HTTP against the
@@ -29,13 +29,17 @@ export class ApiDriver {
   }
 
   auth = {
-    register: async (context: ApiContext): Promise<Session> => {
-      const credentials: Credentials = {
+    register: async (
+      context: ApiContext,
+      username?: string,
+    ): Promise<Session> => {
+      const registration: Register = {
         email: context.email,
         password: context.password,
+        ...(username === undefined ? {} : { username }),
       };
 
-      const session = await this.client().auth.register(credentials);
+      const session = await this.client().auth.register(registration);
 
       this.rememberSession(context, session);
 

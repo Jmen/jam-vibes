@@ -1,11 +1,13 @@
 import { request, requestMultipart, RequestOptions } from "./client";
 import {
   credentialsSchema,
+  registerSchema,
   sessionResponseSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
   okResponseSchema,
   Credentials,
+  Register,
   ForgotPassword,
   ResetPassword,
 } from "@/app/api/auth/schema";
@@ -57,11 +59,11 @@ export class ApiClient {
   constructor(private readonly options: RequestOptions = {}) {}
 
   auth = {
-    register: (credentials: Credentials) =>
+    register: (registration: Register) =>
       request(
         sessionResponseSchema,
         "/api/auth/register",
-        { method: "POST", body: credentialsSchema.parse(credentials) },
+        { method: "POST", body: registerSchema.parse(registration) },
         this.options,
       ),
 

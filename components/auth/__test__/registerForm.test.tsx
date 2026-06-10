@@ -34,6 +34,7 @@ describe("RegisterForm", () => {
 
     render(<RegisterForm onSuccess={onSuccess} />);
 
+    await userEvent.type(screen.getByLabelText(/username/i), "new-user");
     await userEvent.type(screen.getByLabelText(/email/i), "new@example.com");
     await userEvent.type(screen.getByLabelText(/password/i), "password-123");
     await userEvent.click(
@@ -44,7 +45,26 @@ describe("RegisterForm", () => {
     expect(register).toHaveBeenCalledWith({
       email: "new@example.com",
       password: "password-123",
+      username: "new-user",
     });
+  });
+
+  it("requires a username", async () => {
+    const onSuccess = vi.fn();
+
+    render(<RegisterForm onSuccess={onSuccess} />);
+
+    await userEvent.type(screen.getByLabelText(/email/i), "new@example.com");
+    await userEvent.type(screen.getByLabelText(/password/i), "password-123");
+    await userEvent.click(
+      screen.getByRole("button", { name: /create account/i }),
+    );
+
+    expect(
+      await screen.findByText(/username must be at least 3 characters/i),
+    ).toBeInTheDocument();
+    expect(register).not.toHaveBeenCalled();
+    expect(onSuccess).not.toHaveBeenCalled();
   });
 
   it("shows the API error when the email is taken", async () => {
@@ -54,6 +74,7 @@ describe("RegisterForm", () => {
 
     render(<RegisterForm onSuccess={vi.fn()} />);
 
+    await userEvent.type(screen.getByLabelText(/username/i), "dupe-user");
     await userEvent.type(screen.getByLabelText(/email/i), "dupe@example.com");
     await userEvent.type(screen.getByLabelText(/password/i), "password-123");
     await userEvent.click(
@@ -61,5 +82,24 @@ describe("RegisterForm", () => {
     );
 
     expect(await screen.findByText(/already registered/i)).toBeInTheDocument();
+  });
+
+  it("shows the API error when the username is taken", async () => {
+    const onSuccess = vi.fn();
+    register.mockRejectedValue(
+      new ApiError(400, "username_taken", "That username is already taken"),
+    );
+
+    render(<RegisterForm onSuccess={onSuccess} />);
+
+    await userEvent.type(screen.getByLabelText(/username/i), "taken-user");
+    await userEvent.type(screen.getByLabelText(/email/i), "new@example.com");
+    await userEvent.type(screen.getByLabelText(/password/i), "password-123");
+    await userEvent.click(
+      screen.getByRole("button", { name: /create account/i }),
+    );
+
+    expect(await screen.findByText(/already taken/i)).toBeInTheDocument();
+    expect(onSuccess).not.toHaveBeenCalled();
   });
 });

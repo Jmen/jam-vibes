@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { usernameSchema } from "../my/profile/schema";
 
 export const credentialsSchema = z.object({
   email: z.email(),
@@ -6,6 +7,15 @@ export const credentialsSchema = z.object({
 });
 
 export type Credentials = z.infer<typeof credentialsSchema>;
+
+// Username is optional at the API: the form presents it as required, but
+// the generated name from the signup trigger is the real safety net, so
+// nothing blocks on choosing one (see ADR 0001)
+export const registerSchema = credentialsSchema.extend({
+  username: usernameSchema.optional(),
+});
+
+export type Register = z.infer<typeof registerSchema>;
 
 export const sessionResponseSchema = z.object({
   userId: z.string(),
