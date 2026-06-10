@@ -25,6 +25,15 @@ import {
   updateJamSchema,
   UpdateJam,
 } from "@/app/api/jams/[id]/schema";
+import {
+  audioResponseSchema,
+  audioListResponseSchema,
+} from "@/app/api/audio/schema";
+import {
+  addLoopSchema,
+  addLoopResponseSchema,
+  AddLoop,
+} from "@/app/api/jams/[id]/loops/schema";
 
 export { ApiError } from "./client";
 export type { RequestOptions } from "./client";
@@ -147,6 +156,37 @@ export class ApiClient {
         this.options,
       );
     },
+
+    addLoop: (idOrHumanId: string, input: AddLoop) =>
+      request(
+        addLoopResponseSchema,
+        `/api/jams/${idOrHumanId}/loops`,
+        { method: "POST", body: addLoopSchema.parse(input) },
+        this.options,
+      ),
+  };
+
+  audio = {
+    upload: (jamId: string, file: Blob, fileName = "track.wav") => {
+      const formData = new FormData();
+      formData.append("file", file, fileName);
+      formData.append("jamId", jamId);
+
+      return requestMultipart(
+        audioResponseSchema,
+        "/api/audio",
+        formData,
+        this.options,
+      );
+    },
+
+    listMine: (jamId: string) =>
+      request(
+        audioListResponseSchema,
+        `/api/audio?jamId=${encodeURIComponent(jamId)}`,
+        {},
+        this.options,
+      ),
   };
 }
 
