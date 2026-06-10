@@ -117,11 +117,22 @@ ALTER TABLE "public"."jam_members" ENABLE ROW LEVEL SECURITY;
 ALTER TABLE "public"."invites" ENABLE ROW LEVEL SECURITY;
 
 -- Jams: public jams visible to everyone (incl. signed-out), private to members
+-- owner_id check is required in addition to membership: the owner's
+-- membership row is created by an AFTER INSERT trigger, which is not yet
+-- visible when PostgREST evaluates the RETURNING representation of the
+-- insert itself.
 CREATE POLICY "Public jams or member jams are viewable"
 ON "public"."jams"
 FOR SELECT
 TO authenticated, anon
-USING (deleted = false AND (access = 'public' OR public.is_jam_member(id, auth.uid())));
+USING (
+    deleted = false
+    AND (
+        access = 'public'
+        OR owner_id = auth.uid()
+        OR public.is_jam_member(id, auth.uid())
+    )
+);
 
 CREATE POLICY "Users can create jams they own"
 ON "public"."jams"

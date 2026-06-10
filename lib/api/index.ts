@@ -14,6 +14,17 @@ import {
   updateProfileSchema,
   UpdateProfile,
 } from "@/app/api/my/profile/schema";
+import {
+  createJamSchema,
+  jamSummarySchema,
+  jamListResponseSchema,
+  CreateJam,
+} from "@/app/api/jams/schema";
+import {
+  getJamResponseSchema,
+  updateJamSchema,
+  UpdateJam,
+} from "@/app/api/jams/[id]/schema";
 
 export { ApiError } from "./client";
 export type { RequestOptions } from "./client";
@@ -91,6 +102,50 @@ export class ApiClient {
           this.options,
         );
       },
+    },
+  };
+
+  jams = {
+    create: (input: CreateJam) =>
+      request(
+        jamSummarySchema,
+        "/api/jams",
+        { method: "POST", body: createJamSchema.parse(input) },
+        this.options,
+      ),
+
+    listMine: () =>
+      request(jamListResponseSchema, "/api/jams", {}, this.options),
+
+    listPublic: () =>
+      request(jamListResponseSchema, "/api/jams/public", {}, this.options),
+
+    get: (idOrHumanId: string) =>
+      request(
+        getJamResponseSchema,
+        `/api/jams/${idOrHumanId}`,
+        {},
+        this.options,
+      ),
+
+    update: (idOrHumanId: string, input: UpdateJam) =>
+      request(
+        getJamResponseSchema,
+        `/api/jams/${idOrHumanId}`,
+        { method: "PATCH", body: updateJamSchema.parse(input) },
+        this.options,
+      ),
+
+    uploadPhoto: (idOrHumanId: string, file: Blob, fileName = "photo.png") => {
+      const formData = new FormData();
+      formData.append("file", file, fileName);
+
+      return requestMultipart(
+        getJamResponseSchema,
+        `/api/jams/${idOrHumanId}/photo`,
+        formData,
+        this.options,
+      );
     },
   };
 }

@@ -3,8 +3,6 @@ import { ApiDriver, ApiContext } from "../drivers/apiDriver";
 import { ApiError } from "@/lib/api";
 import { findLatestEmailTo, extractRecoveryTokenHash } from "../drivers/mailpit";
 
-let uniqueCounter = 0;
-
 // DSL: a person interacting with the application. Test scenarios read as
 // actions this user takes, with no protocol details.
 export class User {
@@ -14,9 +12,11 @@ export class User {
     private readonly driver: ApiDriver,
     name = "user",
   ) {
-    uniqueCounter += 1;
+    // Random suffix, not a counter: test files run in parallel workers,
+    // so module state cannot guarantee uniqueness across files
+    const unique = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
     this.context = {
-      email: `${name}-${Date.now()}-${uniqueCounter}@example.com`,
+      email: `${name}-${unique}@example.com`,
       password: "initial-password-123",
     };
   }

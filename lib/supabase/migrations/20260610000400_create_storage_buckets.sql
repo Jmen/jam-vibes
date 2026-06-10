@@ -54,6 +54,17 @@ USING (bucket_id = 'avatars');
 
 -- Jam photo objects live under <jam_id>/<file>; only the jam owner writes.
 -- Reads for jam audiences use signed URLs generated server-side.
+-- The owner SELECT policy is required for uploads too: the storage service
+-- inserts with RETURNING *, which checks SELECT visibility of the new row.
+CREATE POLICY "Jam owners can read jam photo objects"
+ON storage.objects
+FOR SELECT
+TO authenticated
+USING (
+    bucket_id = 'jam-photos'
+    AND public.is_jam_owner(((storage.foldername(name))[1])::uuid, auth.uid())
+);
+
 CREATE POLICY "Jam owners can upload jam photos"
 ON storage.objects
 FOR INSERT

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { z } from "zod";
 import { withAuth } from "./wrappers/withAuth";
+import { withOptionalAuth } from "./wrappers/withOptionalAuth";
 import { withErrorHandling } from "./wrappers/withErrorHandling";
 import { withValidation, ValidationSchemas } from "./wrappers/withValidation";
 
@@ -54,10 +55,16 @@ type RouteHandler = (
 
 export class ApiHandlerBuilder {
   private _withAuth = false;
+  private _withOptionalAuth = false;
   private _validationSchemas: ValidationSchemas = {};
 
   auth(): ApiHandlerBuilder {
     this._withAuth = true;
+    return this;
+  }
+
+  optionalAuth(): ApiHandlerBuilder {
+    this._withOptionalAuth = true;
     return this;
   }
 
@@ -80,6 +87,8 @@ export class ApiHandlerBuilder {
 
     if (this._withAuth) {
       wrappedHandler = withAuth(wrappedHandler);
+    } else if (this._withOptionalAuth) {
+      wrappedHandler = withOptionalAuth(wrappedHandler);
     }
 
     wrappedHandler = withErrorHandling(wrappedHandler);
