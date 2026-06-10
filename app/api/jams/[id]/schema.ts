@@ -14,7 +14,7 @@ export const loopViewSchema = z.object({
   id: z.string(),
   createdAt: z.string(),
   parentId: z.string().nullable(),
-  ownerUsername: z.string().nullable(),
+  ownerUsername: z.string(),
   audio: z.array(loopAudioViewSchema),
 });
 
@@ -32,7 +32,7 @@ export const getJamResponseSchema = z.object({
   access: jamAccessSchema,
   createdAt: z.string(),
   ownerId: z.string(),
-  ownerUsername: z.string().nullable(),
+  ownerUsername: z.string(),
   photoUrl: z.string().nullable(),
   viewerRole: viewerRoleSchema,
   loops: z.array(loopViewSchema),

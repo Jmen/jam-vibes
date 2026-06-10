@@ -11,7 +11,7 @@ export interface JamRow {
   owner_id: string;
   photo_path: string | null;
   created_at: string;
-  profiles?: { username: string | null } | null;
+  profiles: { username: string };
   loops?: { count: number }[];
 }
 

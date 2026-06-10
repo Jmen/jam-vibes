@@ -20,7 +20,7 @@ async function toSummaries(rows: JamRow[]): Promise<JamSummary[]> {
     access: row.access as JamSummary["access"],
     createdAt: row.created_at,
     ownerId: row.owner_id,
-    ownerUsername: row.profiles?.username ?? null,
+    ownerUsername: row.profiles.username,
     photoUrl: row.photo_path ? (photoUrls.get(row.photo_path) ?? null) : null,
     loopCount: row.loops?.[0]?.count ?? 0,
   }));

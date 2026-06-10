@@ -45,7 +45,7 @@ export function NavigationBar() {
     }
   };
 
-  const displayName = profile?.username ?? profile?.email ?? "";
+  const displayName = profile?.username ?? "";
 
   return (
     <header className="border-b">

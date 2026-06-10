@@ -33,7 +33,7 @@ export function JamCard({ jam }: { jam: JamSummary }) {
             </p>
           )}
           <p className="mt-2 text-xs text-muted-foreground">
-            {jam.ownerUsername ? `by ${jam.ownerUsername} · ` : ""}
+            {`by ${jam.ownerUsername} · `}
             {jam.loopCount} {jam.loopCount === 1 ? "loop" : "loops"}
           </p>
         </CardContent>

@@ -36,7 +36,7 @@ export function ProfileForm({ profile, onUpdated }: ProfileFormProps) {
 
   const form = useForm<UpdateProfile>({
     resolver: zodResolver(updateProfileSchema),
-    defaultValues: { username: profile.username ?? "" },
+    defaultValues: { username: profile.username },
   });
 
   const onSubmit = async (input: UpdateProfile) => {
@@ -68,7 +68,7 @@ export function ProfileForm({ profile, onUpdated }: ProfileFormProps) {
     }
   };
 
-  const displayName = profile.username ?? profile.email;
+  const displayName = profile.username;
 
   return (
     <div className="space-y-6">

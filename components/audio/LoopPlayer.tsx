@@ -245,7 +245,7 @@ export function LoopPlayer({ loop, loopIndex }: LoopPlayerProps) {
         </Button>
         <h3 className="font-semibold">Loop {loopIndex + 1}</h3>
         <p className="text-xs text-muted-foreground">
-          {loop.ownerUsername ? `by ${loop.ownerUsername} · ` : ""}
+          {`by ${loop.ownerUsername} · `}
           {new Date(loop.createdAt).toLocaleString()}
         </p>
       </div>

@@ -3,7 +3,7 @@ import { ErrorCode, Result, ok, err } from "../../result";
 
 export interface ProfileRow {
   user_id: string;
-  username: string | null;
+  username: string;
   avatar_path: string | null;
 }
 
