@@ -15,7 +15,7 @@ export const GET = new ApiHandlerBuilder()
     const supabase = requireSupabase(context);
     const id = context.params.id as string;
 
-    const result = await getJamCommand(id, supabase);
+    const result = await getJamCommand(id, supabase, context.auth?.userId);
 
     return createResponse(result, "get jam");
   });
@@ -28,7 +28,7 @@ export const PATCH = new ApiHandlerBuilder()
     const id = context.params.id as string;
     const body = getTypedBody(context, updateJamSchema);
 
-    const result = await updateJamCommand(id, body, supabase);
+    const result = await updateJamCommand(id, body, supabase, context.auth?.userId);
 
     return createResponse(result, "update jam");
   });

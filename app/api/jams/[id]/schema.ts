@@ -20,6 +20,10 @@ export const loopViewSchema = z.object({
 
 export type LoopView = z.infer<typeof loopViewSchema>;
 
+export const viewerRoleSchema = z.enum(["owner", "member", "visitor"]);
+
+export type ViewerRole = z.infer<typeof viewerRoleSchema>;
+
 export const getJamResponseSchema = z.object({
   id: z.string(),
   humanId: z.string(),
@@ -30,6 +34,7 @@ export const getJamResponseSchema = z.object({
   ownerId: z.string(),
   ownerUsername: z.string().nullable(),
   photoUrl: z.string().nullable(),
+  viewerRole: viewerRoleSchema,
   loops: z.array(loopViewSchema),
 });
 

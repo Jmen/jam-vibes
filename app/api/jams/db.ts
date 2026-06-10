@@ -51,7 +51,7 @@ export async function insertJam(
     return err("create_failed", error.message, ErrorCode.SERVER_ERROR);
   }
 
-  return ok(data as JamRow);
+  return ok(data as unknown as JamRow);
 }
 
 export async function listJamsForMember(
@@ -69,7 +69,7 @@ export async function listJamsForMember(
     return err("list_failed", error.message, ErrorCode.SERVER_ERROR);
   }
 
-  return ok((data ?? []) as JamRow[]);
+  return ok((data ?? []) as unknown as JamRow[]);
 }
 
 export async function listPublicJams(
@@ -87,5 +87,5 @@ export async function listPublicJams(
     return err("list_failed", error.message, ErrorCode.SERVER_ERROR);
   }
 
-  return ok((data ?? []) as JamRow[]);
+  return ok((data ?? []) as unknown as JamRow[]);
 }

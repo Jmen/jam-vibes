@@ -72,16 +72,20 @@ export function withValidation(schemas: ValidationSchemas) {
   };
 }
 
+// The schema argument exists purely to infer the return type; validation
+// already happened in the wrapper.
 export function getTypedBody<S extends z.ZodType>(
   context: Context,
-  _schema: S,
+  schema: S,
 ): z.infer<S> {
+  void schema;
   return context.validated?.body as z.infer<S>;
 }
 
 export function getTypedQuery<S extends z.ZodType>(
   context: Context,
-  _schema: S,
+  schema: S,
 ): z.infer<S> {
+  void schema;
   return context.validated?.query as z.infer<S>;
 }

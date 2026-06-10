@@ -39,7 +39,7 @@ export class Profile {
   }
 
   async uploadsAvatar(): Promise<void> {
-    const file = new Blob([TINY_PNG], { type: "image/png" });
+    const file = new Blob([new Uint8Array(TINY_PNG)], { type: "image/png" });
 
     const profile = await this.client().my.profile.uploadAvatar(file);
 

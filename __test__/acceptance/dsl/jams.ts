@@ -81,7 +81,7 @@ export class Jams {
   }
 
   async uploadsPhoto(jamId: string): Promise<void> {
-    const file = new Blob([TINY_PNG], { type: "image/png" });
+    const file = new Blob([new Uint8Array(TINY_PNG)], { type: "image/png" });
 
     const jam = await this.client().jams.uploadPhoto(jamId, file);
 
@@ -89,7 +89,7 @@ export class Jams {
   }
 
   async cannotUploadPhoto(jamId: string): Promise<void> {
-    const file = new Blob([TINY_PNG], { type: "image/png" });
+    const file = new Blob([new Uint8Array(TINY_PNG)], { type: "image/png" });
 
     await expect(
       this.client().jams.uploadPhoto(jamId, file),

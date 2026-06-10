@@ -28,7 +28,12 @@ export const POST = new ApiHandlerBuilder()
       );
     }
 
-    const result = await uploadJamPhotoCommand(id, file, supabase);
+    const result = await uploadJamPhotoCommand(
+      id,
+      file,
+      supabase,
+      context.auth?.userId,
+    );
 
     return createResponse(result, "upload jam photo");
   });

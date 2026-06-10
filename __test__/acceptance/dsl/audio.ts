@@ -20,7 +20,7 @@ export class Audio {
     options: { fileName?: string; frequencyHz?: number } = {},
   ): Promise<AudioView> {
     const wav = makeTestWav(0.5, options.frequencyHz ?? 440);
-    const file = new Blob([wav], { type: "audio/wav" });
+    const file = new Blob([new Uint8Array(wav)], { type: "audio/wav" });
 
     const audio = await this.client().audio.upload(
       jamId,
@@ -36,7 +36,7 @@ export class Audio {
 
   async cannotUpload(jamId: string): Promise<void> {
     const wav = makeTestWav();
-    const file = new Blob([wav], { type: "audio/wav" });
+    const file = new Blob([new Uint8Array(wav)], { type: "audio/wav" });
 
     await expect(
       this.client().audio.upload(jamId, file),

@@ -55,9 +55,18 @@ export class Jam {
     return this.props.photoPath;
   }
 
+  ownerId(): string {
+    return this.props.ownerId;
+  }
+
+  id(): string {
+    return this.props.id;
+  }
+
   viewWithUrls(
     audioUrls: SignedUrl[],
     photoUrl: string | null,
+    viewerRole: JamView["viewerRole"],
   ): Result<JamView> {
     const loops: LoopView[] = [];
 
@@ -108,6 +117,7 @@ export class Jam {
       ownerId: this.props.ownerId,
       ownerUsername: this.props.ownerUsername,
       photoUrl,
+      viewerRole,
       loops,
     });
   }

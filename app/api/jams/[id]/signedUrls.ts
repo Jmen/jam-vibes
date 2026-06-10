@@ -24,9 +24,13 @@ export async function signAudioPaths(
     return err("signing_failed", error.message, ErrorCode.SERVER_ERROR);
   }
 
-  const signed = (data ?? [])
-    .filter((entry) => !entry.error && entry.path)
-    .map((entry) => ({ path: entry.path!, url: entry.signedUrl }));
+  const signed: SignedUrl[] = [];
+
+  for (const entry of data ?? []) {
+    if (!entry.error && entry.path && entry.signedUrl) {
+      signed.push({ path: entry.path, url: entry.signedUrl });
+    }
+  }
 
   return ok(signed);
 }
@@ -63,7 +67,7 @@ export async function signJamPhotos(
     .createSignedUrls(photoPaths, URL_TTL_SECONDS);
 
   for (const entry of data ?? []) {
-    if (!entry.error && entry.path) {
+    if (!entry.error && entry.path && entry.signedUrl) {
       urls.set(entry.path, entry.signedUrl);
     }
   }

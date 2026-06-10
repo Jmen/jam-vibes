@@ -12,9 +12,35 @@ const ALLOWED_IMAGE_TYPES = new Map([
   ["image/webp", "webp"],
 ]);
 
+async function viewerRoleFor(
+  jamId: string,
+  ownerId: string,
+  userId: string | undefined,
+  supabase: SupabaseClient,
+): Promise<JamView["viewerRole"]> {
+  if (!userId) {
+    return "visitor";
+  }
+
+  if (userId === ownerId) {
+    return "owner";
+  }
+
+  // RLS lets users see their own membership rows
+  const { data } = await supabase
+    .from("jam_members")
+    .select("id")
+    .eq("jam_id", jamId)
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  return data ? "member" : "visitor";
+}
+
 export async function getJamCommand(
   idOrHumanId: string,
   supabase: SupabaseClient,
+  viewerUserId?: string,
 ): Promise<Result<JamView>> {
   const jam = await getJam(idOrHumanId, supabase);
 
@@ -30,7 +56,14 @@ export async function getJamCommand(
 
   const photoUrl = await signJamPhoto(jam.data.photoPath());
 
-  return jam.data.viewWithUrls(audioUrls.data, photoUrl);
+  const viewerRole = await viewerRoleFor(
+    jam.data.id(),
+    jam.data.ownerId(),
+    viewerUserId,
+    supabase,
+  );
+
+  return jam.data.viewWithUrls(audioUrls.data, photoUrl, viewerRole);
 }
 
 export async function resolveJamId(
@@ -63,6 +96,7 @@ export async function updateJamCommand(
   idOrHumanId: string,
   update: UpdateJam,
   supabase: SupabaseClient,
+  viewerUserId?: string,
 ): Promise<Result<JamView>> {
   const jamId = await resolveJamId(idOrHumanId, supabase);
 
@@ -76,13 +110,14 @@ export async function updateJamCommand(
     return { error: updated.error };
   }
 
-  return getJamCommand(jamId.data, supabase);
+  return getJamCommand(jamId.data, supabase, viewerUserId);
 }
 
 export async function uploadJamPhotoCommand(
   idOrHumanId: string,
   file: File,
   supabase: SupabaseClient,
+  viewerUserId?: string,
 ): Promise<Result<JamView>> {
   const extension = ALLOWED_IMAGE_TYPES.get(file.type);
 
@@ -129,5 +164,5 @@ export async function uploadJamPhotoCommand(
     return { error: updated.error };
   }
 
-  return getJamCommand(jamId.data, supabase);
+  return getJamCommand(jamId.data, supabase, viewerUserId);
 }
