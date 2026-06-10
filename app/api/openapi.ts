@@ -3,6 +3,7 @@ import { createDocument } from "zod-openapi";
 import type { ZodOpenApiResponsesObject } from "zod-openapi";
 import {
   credentialsSchema,
+  registerSchema,
   sessionResponseSchema,
   forgotPasswordSchema,
   resetPasswordSchema,
@@ -75,8 +76,8 @@ export const openApiDocument = createDocument({
   paths: {
     "/api/auth/register": {
       post: {
-        summary: "Register a new account",
-        requestBody: jsonBody(credentialsSchema),
+        summary: "Register a new account, optionally choosing a username",
+        requestBody: jsonBody(registerSchema),
         responses: responses("201", "Registered", sessionResponseSchema),
       },
     },

@@ -29,6 +29,39 @@ describe("user profiles", () => {
     expect(new Set(usernames).size).toBe(users.length);
   });
 
+  it("a user can choose their username at registration", async () => {
+    const user = new User(driver);
+    const username = `chosen_${Date.now()}`;
+
+    await user.registersWithUsername(username);
+
+    await new Profile(driver, user.context).usernameIs(username);
+  });
+
+  it("registering with a taken username creates no account", async () => {
+    // underscore on purpose: it is a LIKE wildcard, so this also pins the
+    // escaping in the case-insensitive availability check
+    const username = `claimed_${Date.now()}`;
+    const first = new User(driver, "first");
+    await first.registersWithUsername(username);
+
+    const second = new User(driver, "second");
+    await second.cannotRegisterWithUsername(username);
+
+    // the rejection happened before signup: the same email can try again
+    await second.registersWithUsername(`${username}-retry`);
+    await new Profile(driver, second.context).usernameIs(`${username}-retry`);
+  });
+
+  it("username availability at registration is case-insensitive", async () => {
+    const username = `CamelCase-${Date.now()}`;
+    const first = new User(driver, "first");
+    await first.registersWithUsername(username);
+
+    const second = new User(driver, "second");
+    await second.cannotRegisterWithUsername(username.toLowerCase());
+  });
+
   it("a user can pick a username", async () => {
     const user = new User(driver);
     await user.registers();

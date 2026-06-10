@@ -37,6 +37,23 @@ export class User {
     );
   }
 
+  async registersWithUsername(username: string): Promise<void> {
+    const session = await this.driver.auth.register(this.context, username);
+
+    expect(session.userId).toBeTruthy();
+    expect(session.accessToken).toBeTruthy();
+  }
+
+  async cannotRegisterWithUsername(username: string): Promise<void> {
+    await expect(
+      this.driver.auth.register(this.context, username),
+    ).rejects.toMatchObject({
+      name: "ApiError",
+      status: 400,
+      code: "username_taken",
+    });
+  }
+
   async signsIn(): Promise<void> {
     const session = await this.driver.auth.signIn(this.context);
 

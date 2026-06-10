@@ -14,7 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { apiClient, ApiError } from "@/lib/api";
-import { credentialsSchema, Credentials } from "@/app/api/auth/schema";
+import { registerSchema, Register } from "@/app/api/auth/schema";
 
 interface RegisterFormProps {
   onSuccess: () => void;
@@ -23,16 +23,16 @@ interface RegisterFormProps {
 export function RegisterForm({ onSuccess }: RegisterFormProps) {
   const [error, setError] = useState<string | null>(null);
 
-  const form = useForm<Credentials>({
-    resolver: zodResolver(credentialsSchema),
-    defaultValues: { email: "", password: "" },
+  const form = useForm<Register>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: { email: "", password: "", username: "" },
   });
 
-  const onSubmit = async (credentials: Credentials) => {
+  const onSubmit = async (registration: Register) => {
     setError(null);
 
     try {
-      await apiClient.auth.register(credentials);
+      await apiClient.auth.register(registration);
       onSuccess();
     } catch (caught) {
       setError(
@@ -48,6 +48,19 @@ export function RegisterForm({ onSuccess }: RegisterFormProps) {
         onSubmit={form.handleSubmit(onSubmit)}
         className="space-y-4"
       >
+        <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Username</FormLabel>
+              <FormControl>
+                <Input autoComplete="nickname" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
         <FormField
           control={form.control}
           name="email"

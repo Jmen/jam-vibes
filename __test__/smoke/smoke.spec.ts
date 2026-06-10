@@ -10,6 +10,7 @@ test("a musician can register, create a jam and commit a loop", async ({
 
   await page.goto("/auth");
   await page.getByRole("tab", { name: /register/i }).click();
+  await page.getByLabel(/username/i).fill(`smoke-${Date.now()}`);
   await page.getByLabel(/email/i).fill(email);
   await page.getByLabel(/password/i).fill("smoke-password-123");
   await page.getByRole("button", { name: /create account/i }).click();
