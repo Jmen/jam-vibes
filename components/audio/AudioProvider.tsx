@@ -23,6 +23,10 @@ const SharedAudioContext = createContext<AudioContextValue | null>(null);
 export function AudioProvider({ children }: { children: ReactNode }) {
   const audioContextRef = useRef<AudioContext | null>(null);
   const stopFunctionsRef = useRef<Map<string, () => void>>(new Map());
+  // Mirrors the state: stopping the previous loop is a side effect, so it
+  // must happen in the event handler — never inside the setState updater,
+  // which React runs during render
+  const playingLoopIdRef = useRef<string | null>(null);
   const [playingLoopId, setPlayingLoopIdState] = useState<string | null>(null);
 
   const getAudioContext = useCallback(() => {
@@ -33,13 +37,15 @@ export function AudioProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const setPlayingLoopId = useCallback((loopId: string | null) => {
-    setPlayingLoopIdState((previous) => {
-      // One loop at a time: stop whichever was playing before
-      if (previous && previous !== loopId) {
-        stopFunctionsRef.current.get(previous)?.();
-      }
-      return loopId;
-    });
+    const previous = playingLoopIdRef.current;
+
+    // One loop at a time: stop whichever was playing before
+    if (previous && previous !== loopId) {
+      stopFunctionsRef.current.get(previous)?.();
+    }
+
+    playingLoopIdRef.current = loopId;
+    setPlayingLoopIdState(loopId);
   }, []);
 
   const registerStopFunction = useCallback(
