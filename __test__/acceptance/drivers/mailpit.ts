@@ -36,9 +36,9 @@ export async function findLatestEmailTo(
 }
 
 export function extractRecoveryTokenHash(emailBody: string): string {
-  // The recovery link looks like:
-  // http://.../auth/v1/verify?token=<token_hash>&type=recovery&redirect_to=...
-  const match = emailBody.match(/[?&;]token(?:=|=3D)([^&\s"']+)/i);
+  // The custom recovery template links to:
+  // {SITE_URL}/auth/reset-password?token_hash=<token_hash>
+  const match = emailBody.match(/token_hash(?:=|=3D)([^&\s"']+)/i);
 
   if (!match) {
     throw new Error("No recovery token found in email body");
