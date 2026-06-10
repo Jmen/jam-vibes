@@ -14,8 +14,8 @@ function ResetPasswordContent() {
   if (!tokenHash) {
     return (
       <p className="text-sm text-muted-foreground">
-        This reset link is missing its token. Request a new one from the
-        forgot password page.
+        This reset link is missing its token. Request a new one from the forgot
+        password page.
       </p>
     );
   }

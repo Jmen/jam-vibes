@@ -50,12 +50,9 @@ test("a visitor sees new loops appear in real time", async ({ browser }) => {
     await visitor.waitForTimeout(1500);
 
     // The owner commits a loop
-    const loopResponse = await owner.request.post(
-      `/api/jams/${jam.id}/loops`,
-      {
-        data: { audio: [{ audioId: audio.id, volume: 1 }] },
-      },
-    );
+    const loopResponse = await owner.request.post(`/api/jams/${jam.id}/loops`, {
+      data: { audio: [{ audioId: audio.id, volume: 1 }] },
+    });
     expect(loopResponse.ok()).toBeTruthy();
 
     // ... and the visitor's page updates without any reload

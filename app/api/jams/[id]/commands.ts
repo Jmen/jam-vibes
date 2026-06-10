@@ -151,11 +151,7 @@ export async function uploadJamPhotoCommand(
     .upload(path, file, { upsert: true, contentType: file.type });
 
   if (uploadError) {
-    return err(
-      "upload_failed",
-      uploadError.message,
-      ErrorCode.FORBIDDEN,
-    );
+    return err("upload_failed", uploadError.message, ErrorCode.FORBIDDEN);
   }
 
   const updated = await setJamPhotoPath(jamId.data, path, supabase);

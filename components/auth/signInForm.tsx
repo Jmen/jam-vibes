@@ -35,15 +35,17 @@ export function SignInForm({ onSuccess }: SignInFormProps) {
       await apiClient.auth.signIn(credentials);
       onSuccess();
     } catch (caught) {
-      setError(
-        caught instanceof ApiError ? caught.message : "Sign in failed",
-      );
+      setError(caught instanceof ApiError ? caught.message : "Sign in failed");
     }
   };
 
   return (
     <Form {...form}>
-      <form noValidate onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form
+        noValidate
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-4"
+      >
         <FormField
           control={form.control}
           name="email"

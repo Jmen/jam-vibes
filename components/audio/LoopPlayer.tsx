@@ -225,7 +225,11 @@ export function LoopPlayer({ loop, loopIndex }: LoopPlayerProps) {
           size="sm"
           onClick={togglePlayback}
           disabled={isLoading}
-          aria-label={isPlaying ? `Stop loop ${loopIndex + 1}` : `Play loop ${loopIndex + 1}`}
+          aria-label={
+            isPlaying
+              ? `Stop loop ${loopIndex + 1}`
+              : `Play loop ${loopIndex + 1}`
+          }
           className="w-24"
         >
           {isLoading ? (

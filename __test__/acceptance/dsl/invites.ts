@@ -35,9 +35,9 @@ export class Invites {
   }
 
   async cannotAccept(token: string): Promise<void> {
-    await expect(
-      this.client().invites.accept({ token }),
-    ).rejects.toThrowError(ApiError);
+    await expect(this.client().invites.accept({ token })).rejects.toThrowError(
+      ApiError,
+    );
   }
 
   async invitesListShows(jamId: string, email: string): Promise<void> {

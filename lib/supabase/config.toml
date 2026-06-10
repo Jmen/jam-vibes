@@ -325,6 +325,16 @@ max_frequency = "5s"
 # Use an external OAuth provider. The full list of providers are: `apple`, `azure`, `bitbucket`,
 # `discord`, `facebook`, `github`, `gitlab`, `google`, `keycloak`, `linkedin_oidc`, `notion`, `twitch`,
 # `twitter`, `x`, `slack`, `spotify`, `workos`, `zoom`.
+# Google sign-in: provide both env vars in lib/.env (or your shell) and set
+# NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true in .env.local to show the button,
+# then restart the stack (npm run supabase:stop && npm run supabase:start).
+[auth.external.google]
+enabled = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_ENABLED)"
+client_id = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_CLIENT_ID)"
+secret = "env(SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET)"
+# Required for local sign in with Google auth
+skip_nonce_check = true
+
 [auth.external.apple]
 enabled = false
 client_id = ""

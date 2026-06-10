@@ -53,9 +53,7 @@ export function InviteForm({ jamId }: InviteFormProps) {
     }
   };
 
-  const link = invite
-    ? inviteLink(window.location.origin, invite.token)
-    : null;
+  const link = invite ? inviteLink(window.location.origin, invite.token) : null;
 
   return (
     <div className="space-y-3">

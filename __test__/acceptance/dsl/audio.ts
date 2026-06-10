@@ -38,9 +38,9 @@ export class Audio {
     const wav = makeTestWav();
     const file = new Blob([new Uint8Array(wav)], { type: "audio/wav" });
 
-    await expect(
-      this.client().audio.upload(jamId, file),
-    ).rejects.toThrowError(ApiError);
+    await expect(this.client().audio.upload(jamId, file)).rejects.toThrowError(
+      ApiError,
+    );
   }
 
   async listForJamIncludes(jamId: string, audioId: string): Promise<void> {

@@ -46,3 +46,9 @@ lib/supabase/.temp/
 # tests
 test-results/
 playwright-report/
+
+# supabase secrets
+lib/.env
+
+# generated
+public/openapi.json

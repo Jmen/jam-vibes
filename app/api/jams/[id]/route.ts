@@ -28,7 +28,12 @@ export const PATCH = new ApiHandlerBuilder()
     const id = context.params.id as string;
     const body = getTypedBody(context, updateJamSchema);
 
-    const result = await updateJamCommand(id, body, supabase, context.auth?.userId);
+    const result = await updateJamCommand(
+      id,
+      body,
+      supabase,
+      context.auth?.userId,
+    );
 
     return createResponse(result, "update jam");
   });

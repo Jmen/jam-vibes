@@ -39,7 +39,9 @@ function AcceptInviteContent() {
   }, [token, router]);
 
   if (!token) {
-    return <p className="text-muted-foreground">This invite link is incomplete.</p>;
+    return (
+      <p className="text-muted-foreground">This invite link is incomplete.</p>
+    );
   }
 
   return (

@@ -1,36 +1,113 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🍇 Jam Vibes
+
+Collaborative music loops. Create a jam, upload audio, mix the levels, commit
+a loop — and anyone listening sees it land in real time. Public jams are open
+to the world; private jams work by invite.
+
+## Tech Stack
+
+| Feature          | Implementation                        |
+| ---------------- | ------------------------------------- |
+| Website          | Next.js (App Router)                  |
+| Styling          | Tailwind / shadcn                     |
+| API              | Next.js route handlers                |
+| Authentication   | Supabase Auth (email + Google)        |
+| Database         | Supabase Postgres + RLS               |
+| Storage          | Supabase Storage (signed URLs)        |
+| Realtime         | Supabase Realtime (behind an adapter) |
+| Unit tests       | Vitest + Testing Library              |
+| Acceptance tests | Vitest (API)                          |
+| Smoke tests      | Playwright                            |
+| Hosting          | Vercel (two projects: test → promote) |
+
+## Design Philosophy
+
+**Boring technology.** Stable, well-understood pieces with big communities.
+
+**Free tier / scale to zero.** Supabase and Vercel both run this for free.
+
+**Local offline development.** The entire system runs locally:
+Postgres, auth, storage, realtime and email all live in Docker via the
+Supabase CLI. No internet needed after the first install.
+
+**API first.** The API is the product; the website is one example client.
+Everything the site does goes through `/api/*` with cookie auth — and every
+endpoint equally accepts `Authorization: Bearer <accessToken>`, so a native
+mobile app can be built against the same surface. Live docs at `/docs`
+(OpenAPI generated from the same zod schemas that validate requests).
+
+## Architecture
+
+```
+app/api/<resource>/
+  route.ts      HTTP wiring only (ApiHandlerBuilder)
+  schema.ts     zod schemas: validation + client types + OpenAPI
+  commands.ts   use cases, return Result<T>
+  db.ts         Supabase queries (RLS-scoped client)
+  domain.ts     domain objects where logic deserves a home
+```
+
+- **`ApiHandlerBuilder`** composes `.auth()` / `.optionalAuth()` /
+  `.validateBody()` wrappers around handlers; errors map to HTTP via
+  `Result<T>` and `createResponse`.
+- **Row Level Security is the authorization layer.** API routes query with
+  the caller's identity (cookie session or bearer token); policies decide
+  visibility. Public jams are readable by the `anon` role, which is also what
+  makes signed-out realtime work. The service-role client is used in exactly
+  two narrow places: signing storage URLs for content RLS already approved,
+  and redeeming invite tokens.
+- **One typed client** (`lib/api`) is shared by the website, the component
+  tests (mocked) and the acceptance test driver (real HTTP). Its methods
+  parse responses with the server's own zod schemas, so a contract drift
+  breaks loudly everywhere at once — this is what makes mocking it in UI
+  tests safe.
+- **Realtime is a port** (`lib/realtime/adapter.ts`); Supabase is one
+  adapter. Swapping in Pusher is one file.
+
+## Testing
+
+Judge the suite as a whole, not tests in isolation. Priorities:
+
+1. **Speed** — unit tests run in ~1.5s, acceptance in ~12s against the local
+   stack. A couple of slow tests are tolerated when they buy real confidence.
+2. **Predictive of production** — acceptance tests exercise the real API,
+   database, RLS policies, storage and email (Mailpit); the realtime smoke
+   test runs two real browsers. If these pass, deploys are boring.
+3. **Cost of ownership** — scenarios are written in a DSL
+   (`__test__/acceptance/dsl`) with protocol details confined to one driver,
+   so refactors rarely touch tests.
+4. **Learning/documentation** — scenarios read as the requirements spec:
+   "an invited user can accept and view the private jam".
+
+Layers (Growing Object-Oriented Software / Farley style):
+
+- **Acceptance** (`__test__/acceptance`): scenarios → DSL → API driver →
+  real local stack. Covers auth, profiles, jams, audio, loops, invites and
+  the security boundaries (visitor/member/owner).
+- **Unit** (`components/**/__test__`, `lib`): Testing Library with the typed
+  API client mocked; pure logic (e.g. the audio mixer) tested directly.
+- **Smoke** (`__test__/smoke`): Playwright, kept to two journeys — the core
+  register→create→upload→commit flow, and the two-browser realtime test —
+  because browser tests are inherently the least reliable layer.
 
 ## Getting Started
 
-First, run the development server:
-
 ```bash
+npm install
+npm run supabase:start     # boots the local stack in Docker (ports 553xx)
+npm run supabase:db:reset  # applies migrations
+cp .env.example .env.local # fill in keys from `npm run supabase:status`
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Test commands: `npm run test:unit`, `test:acceptance` (needs dev server +
+stack), `test:smoke`, or everything via `npm run precommit`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Local services: app on `:3000`, Supabase API `:55321`, Postgres `:55322`,
+Mailpit (all local email) `:55324`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Google sign-in (optional)
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Set `SUPABASE_AUTH_EXTERNAL_GOOGLE_ENABLED=true` plus client id/secret in
+`lib/.env`, set `NEXT_PUBLIC_GOOGLE_AUTH_ENABLED=true` in `.env.local`, then
+restart the stack.

@@ -22,7 +22,11 @@ interface DraftTrack {
 
 const MAX_TRACKS = 8;
 
-export function DraftLoop({ jamId, parentLoopId, onCommitted }: DraftLoopProps) {
+export function DraftLoop({
+  jamId,
+  parentLoopId,
+  onCommitted,
+}: DraftLoopProps) {
   const [tracks, setTracks] = useState<DraftTrack[]>([]);
   const [isCommitting, setIsCommitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -71,7 +75,10 @@ export function DraftLoop({ jamId, parentLoopId, onCommitted }: DraftLoopProps) 
   };
 
   return (
-    <div className="rounded-lg border border-dashed p-4" data-testid="draft-loop">
+    <div
+      className="rounded-lg border border-dashed p-4"
+      data-testid="draft-loop"
+    >
       <div className="flex items-center justify-between gap-3">
         <h3 className="font-semibold">Next loop</h3>
         <div className="flex items-center gap-2">
@@ -124,9 +131,7 @@ export function DraftLoop({ jamId, parentLoopId, onCommitted }: DraftLoopProps) 
                   value={[track.volume]}
                   max={1}
                   step={0.01}
-                  onValueChange={(value) =>
-                    setVolume(track.audio.id, value[0])
-                  }
+                  onValueChange={(value) => setVolume(track.audio.id, value[0])}
                   aria-label={`Volume for ${track.audio.fileName ?? "audio"}`}
                 />
                 <span className="w-8 text-right text-xs text-muted-foreground">

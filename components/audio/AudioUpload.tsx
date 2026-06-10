@@ -24,9 +24,7 @@ export function AudioUpload({ jamId, onUploaded }: AudioUploadProps) {
       const audio = await apiClient.audio.upload(jamId, file, file.name);
       onUploaded(audio);
     } catch (caught) {
-      setError(
-        caught instanceof ApiError ? caught.message : "Upload failed",
-      );
+      setError(caught instanceof ApiError ? caught.message : "Upload failed");
     } finally {
       setIsUploading(false);
       if (inputRef.current) {

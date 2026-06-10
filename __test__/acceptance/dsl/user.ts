@@ -1,7 +1,10 @@
 import { expect } from "vitest";
 import { ApiDriver, ApiContext } from "../drivers/apiDriver";
 import { ApiError } from "@/lib/api";
-import { findLatestEmailTo, extractRecoveryTokenHash } from "../drivers/mailpit";
+import {
+  findLatestEmailTo,
+  extractRecoveryTokenHash,
+} from "../drivers/mailpit";
 
 // DSL: a person interacting with the application. Test scenarios read as
 // actions this user takes, with no protocol details.

@@ -91,9 +91,7 @@ describe("JamDetail", () => {
     expect(screen.getByTestId("loop-player-loop-1")).toBeInTheDocument();
     expect(screen.queryByTestId("draft-loop")).not.toBeInTheDocument();
     expect(screen.queryByTestId("toggle-access")).not.toBeInTheDocument();
-    expect(
-      screen.queryByLabelText(/invite by email/i),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/invite by email/i)).not.toBeInTheDocument();
   });
 
   it("owners get visibility, photo and invite controls", () => {

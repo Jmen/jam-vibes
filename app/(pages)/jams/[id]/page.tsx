@@ -56,7 +56,11 @@ export default function JamPage() {
 
   return (
     <AudioProvider>
-      <JamDetail jam={jam} onChanged={setJam} onRefresh={() => void fetchJam()} />
+      <JamDetail
+        jam={jam}
+        onChanged={setJam}
+        onRefresh={() => void fetchJam()}
+      />
     </AudioProvider>
   );
 }

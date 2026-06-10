@@ -52,9 +52,7 @@ describe("SignInForm", () => {
     await userEvent.type(screen.getByLabelText(/password/i), "short");
     await userEvent.click(screen.getByRole("button", { name: /sign in/i }));
 
-    expect(await screen.findAllByText(/invalid|at least/i)).not.toHaveLength(
-      0,
-    );
+    expect(await screen.findAllByText(/invalid|at least/i)).not.toHaveLength(0);
     expect(signIn).not.toHaveBeenCalled();
   });
 

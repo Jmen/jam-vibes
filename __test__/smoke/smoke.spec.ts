@@ -21,17 +21,13 @@ test("a musician can register, create a jam and commit a loop", async ({
   await page.getByRole("button", { name: /create jam/i }).click();
   await page.waitForURL(/\/jams\/.+/);
 
-  await expect(
-    page.getByRole("heading", { name: "Smoke Jam" }),
-  ).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Smoke Jam" })).toBeVisible();
 
-  await page
-    .getByTestId("audio-file-input")
-    .setInputFiles({
-      name: "groove.wav",
-      mimeType: "audio/wav",
-      buffer: makeTestWav(0.5, 330),
-    });
+  await page.getByTestId("audio-file-input").setInputFiles({
+    name: "groove.wav",
+    mimeType: "audio/wav",
+    buffer: makeTestWav(0.5, 330),
+  });
 
   await expect(page.locator('[data-testid^="draft-track-"]')).toBeVisible();
 

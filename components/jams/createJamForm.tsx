@@ -49,7 +49,11 @@ export function CreateJamForm({ onCreated }: CreateJamFormProps) {
 
   return (
     <Form {...form}>
-      <form noValidate onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+      <form
+        noValidate
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-4"
+      >
         <FormField
           control={form.control}
           name="name"
@@ -70,10 +74,7 @@ export function CreateJamForm({ onCreated }: CreateJamFormProps) {
             <FormItem>
               <FormLabel>Description</FormLabel>
               <FormControl>
-                <Textarea
-                  placeholder="What's this jam about?"
-                  {...field}
-                />
+                <Textarea placeholder="What's this jam about?" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

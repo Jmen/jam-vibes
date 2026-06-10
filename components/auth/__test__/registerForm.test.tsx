@@ -60,8 +60,6 @@ describe("RegisterForm", () => {
       screen.getByRole("button", { name: /create account/i }),
     );
 
-    expect(
-      await screen.findByText(/already registered/i),
-    ).toBeInTheDocument();
+    expect(await screen.findByText(/already registered/i)).toBeInTheDocument();
   });
 });

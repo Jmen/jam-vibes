@@ -49,9 +49,7 @@ export function ProfileForm({ profile, onUpdated }: ProfileFormProps) {
       setSaved(true);
       emitAuthChanged();
     } catch (caught) {
-      setError(
-        caught instanceof ApiError ? caught.message : "Could not save",
-      );
+      setError(caught instanceof ApiError ? caught.message : "Could not save");
     }
   };
 
@@ -64,9 +62,7 @@ export function ProfileForm({ profile, onUpdated }: ProfileFormProps) {
       onUpdated(updated);
       emitAuthChanged();
     } catch (caught) {
-      setError(
-        caught instanceof ApiError ? caught.message : "Upload failed",
-      );
+      setError(caught instanceof ApiError ? caught.message : "Upload failed");
     } finally {
       setIsUploading(false);
     }
@@ -117,7 +113,11 @@ export function ProfileForm({ profile, onUpdated }: ProfileFormProps) {
       </div>
 
       <Form {...form}>
-        <form noValidate onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+        <form
+          noValidate
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="space-y-4"
+        >
           <FormField
             control={form.control}
             name="username"
