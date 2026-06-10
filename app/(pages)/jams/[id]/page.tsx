@@ -7,6 +7,7 @@ import { apiClient, ApiError } from "@/lib/api";
 import { JamView } from "@/app/api/jams/[id]/schema";
 import { JamDetail } from "@/components/jams/jamDetail";
 import { AudioProvider } from "@/components/audio/AudioProvider";
+import { createSupabaseRealtimeAdapter } from "@/lib/realtime/supabaseAdapter";
 
 export default function JamPage() {
   const params = useParams<{ id: string }>();
@@ -29,6 +30,14 @@ export default function JamPage() {
   useEffect(() => {
     void fetchJam();
   }, [fetchJam]);
+
+  // Live updates: when anyone commits a loop to this jam, refetch
+  useEffect(() => {
+    if (!jam?.id) return;
+
+    const adapter = createSupabaseRealtimeAdapter();
+    return adapter.subscribeToJamLoops(jam.id, () => void fetchJam());
+  }, [jam?.id, fetchJam]);
 
   if (error) {
     return (
