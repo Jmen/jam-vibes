@@ -34,6 +34,17 @@ import {
   addLoopResponseSchema,
   AddLoop,
 } from "@/app/api/jams/[id]/loops/schema";
+import {
+  createInviteSchema,
+  inviteResponseSchema,
+  inviteListResponseSchema,
+  CreateInvite,
+} from "@/app/api/jams/[id]/invites/schema";
+import {
+  acceptInviteSchema,
+  acceptInviteResponseSchema,
+  AcceptInvite,
+} from "@/app/api/invites/accept/schema";
 
 export { ApiError } from "./client";
 export type { RequestOptions } from "./client";
@@ -162,6 +173,32 @@ export class ApiClient {
         addLoopResponseSchema,
         `/api/jams/${idOrHumanId}/loops`,
         { method: "POST", body: addLoopSchema.parse(input) },
+        this.options,
+      ),
+
+    createInvite: (idOrHumanId: string, input: CreateInvite) =>
+      request(
+        inviteResponseSchema,
+        `/api/jams/${idOrHumanId}/invites`,
+        { method: "POST", body: createInviteSchema.parse(input) },
+        this.options,
+      ),
+
+    listInvites: (idOrHumanId: string) =>
+      request(
+        inviteListResponseSchema,
+        `/api/jams/${idOrHumanId}/invites`,
+        {},
+        this.options,
+      ),
+  };
+
+  invites = {
+    accept: (input: AcceptInvite) =>
+      request(
+        acceptInviteResponseSchema,
+        "/api/invites/accept",
+        { method: "POST", body: acceptInviteSchema.parse(input) },
         this.options,
       ),
   };
