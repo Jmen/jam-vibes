@@ -20,7 +20,7 @@ export const jamSummarySchema = z.object({
   access: jamAccessSchema,
   createdAt: z.string(),
   ownerId: z.string(),
-  ownerUsername: z.string().nullable(),
+  ownerUsername: z.string(),
   photoUrl: z.string().nullable(),
   loopCount: z.number(),
 });

@@ -89,7 +89,7 @@ export function JamDetail({ jam, onChanged, onRefresh }: JamDetailProps) {
             <p className="mt-1 text-muted-foreground">{jam.description}</p>
           )}
           <p className="mt-1 text-sm text-muted-foreground">
-            {jam.ownerUsername ? `by ${jam.ownerUsername} · ` : ""}
+            {`by ${jam.ownerUsername} · `}
             created {new Date(jam.createdAt).toLocaleDateString()}
           </p>
 

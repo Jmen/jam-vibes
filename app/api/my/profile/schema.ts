@@ -3,7 +3,7 @@ import { z } from "zod";
 export const profileResponseSchema = z.object({
   userId: z.string(),
   email: z.string(),
-  username: z.string().nullable(),
+  username: z.string(),
   avatarUrl: z.string().nullable(),
 });
 

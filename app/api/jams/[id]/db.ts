@@ -13,12 +13,12 @@ interface JamDetailRow {
   owner_id: string;
   photo_path: string | null;
   created_at: string;
-  profiles: { username: string | null } | null;
+  profiles: { username: string };
   loops: {
     id: string;
     parent_id: string | null;
     created_at: string;
-    profiles: { username: string | null } | null;
+    profiles: { username: string };
     loop_audio: {
       id: string;
       position: number;
@@ -73,7 +73,7 @@ export async function getJam(
     id: loop.id,
     createdAt: loop.created_at,
     parentId: loop.parent_id,
-    ownerUsername: loop.profiles?.username ?? null,
+    ownerUsername: loop.profiles.username,
     audio: loop.loop_audio
       .filter((loopAudio) => loopAudio.audio !== null)
       .map((loopAudio) => ({
@@ -97,7 +97,7 @@ export async function getJam(
       access: row.access,
       createdAt: row.created_at,
       ownerId: row.owner_id,
-      ownerUsername: row.profiles?.username ?? null,
+      ownerUsername: row.profiles.username,
       photoPath: row.photo_path,
       loops,
     }),

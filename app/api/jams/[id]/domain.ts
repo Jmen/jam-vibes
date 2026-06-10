@@ -18,7 +18,7 @@ export interface LoopRecord {
   id: string;
   createdAt: string;
   parentId: string | null;
-  ownerUsername: string | null;
+  ownerUsername: string;
   audio: LoopAudioRecord[];
 }
 
@@ -39,7 +39,7 @@ export class Jam {
       access: string;
       createdAt: string;
       ownerId: string;
-      ownerUsername: string | null;
+      ownerUsername: string;
       photoPath: string | null;
       loops: LoopRecord[];
     },

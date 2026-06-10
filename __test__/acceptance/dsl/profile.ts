@@ -31,7 +31,7 @@ export class Profile {
     const profile = await this.client().my.profile.get();
 
     expect(profile.username).toBeTruthy();
-    return profile.username!;
+    return profile.username;
   }
 
   async picksUsername(username: string): Promise<void> {
