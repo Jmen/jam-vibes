@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { describe, it } from "vitest";
+import { describe, expect, it } from "vitest";
 import { ApiDriver } from "../drivers/apiDriver";
 import { User } from "../dsl/user";
 import { Profile } from "../dsl/profile";
@@ -7,12 +7,26 @@ import { Profile } from "../dsl/profile";
 const driver = new ApiDriver();
 
 describe("user profiles", () => {
-  it("a new user starts with an empty profile", async () => {
+  it("a new user is born with a generated username", async () => {
     const user = new User(driver);
     await user.registers();
 
     const profile = new Profile(driver, user.context);
-    await profile.isEmpty();
+    await profile.isBornWithGeneratedUsername();
+  });
+
+  it("simultaneous signups each get a distinct username", async () => {
+    const users = Array.from(
+      { length: 6 },
+      (_, i) => new User(driver, `racer-${i}`),
+    );
+    await Promise.all(users.map((user) => user.registers()));
+
+    const usernames = await Promise.all(
+      users.map((user) => new Profile(driver, user.context).username()),
+    );
+
+    expect(new Set(usernames).size).toBe(users.length);
   });
 
   it("a user can pick a username", async () => {

@@ -18,12 +18,20 @@ export class Profile {
     return this.driver.client(this.context);
   }
 
-  async isEmpty(): Promise<void> {
+  // e.g. "brave-walrus-x4f2", the shape generate_username() produces
+  async isBornWithGeneratedUsername(): Promise<void> {
     const profile = await this.client().my.profile.get();
 
-    expect(profile.username).toBeNull();
+    expect(profile.username).toMatch(/^[a-z]+-[a-z]+-[a-z0-9]{4}$/);
     expect(profile.avatarUrl).toBeNull();
     expect(profile.email).toBe(this.context.email);
+  }
+
+  async username(): Promise<string> {
+    const profile = await this.client().my.profile.get();
+
+    expect(profile.username).toBeTruthy();
+    return profile.username!;
   }
 
   async picksUsername(username: string): Promise<void> {
