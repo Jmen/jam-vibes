@@ -67,16 +67,10 @@ describe("ChooseUsernamePage", () => {
     await waitFor(() => expect(push).toHaveBeenCalledWith("/"));
   });
 
+  // The full off-site matrix is pinned in lib/inAppPath.test.ts; this
+  // checks the page actually routes next through that sanitizer.
   it("refuses to continue off-site", async () => {
-    search.value = `next=${encodeURIComponent("https://evil.example")}`;
-
-    await chooseUsername();
-
-    await waitFor(() => expect(push).toHaveBeenCalledWith("/"));
-  });
-
-  it("refuses protocol-relative destinations", async () => {
-    search.value = `next=${encodeURIComponent("//evil.example/jams")}`;
+    search.value = `next=${encodeURIComponent("/\\evil.example")}`;
 
     await chooseUsername();
 

@@ -11,15 +11,14 @@ import {
 } from "@/components/ui/card";
 import { UsernameForm } from "@/components/auth/usernameForm";
 import { emitAuthChanged } from "@/lib/authEvents";
+import { toInAppPath } from "@/lib/inAppPath";
 
 function ChooseUsernameContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const next = searchParams.get("next") ?? "/";
-  // Only ever continue within the app: a bare "/" prefix excludes absolute
-  // and protocol-relative ("//host") destinations smuggled into the query.
-  const destination =
-    next.startsWith("/") && !next.startsWith("//") ? next : "/";
+  // The callback already sanitizes next, but this page is reachable
+  // directly with an arbitrary query string.
+  const destination = toInAppPath(searchParams.get("next"));
 
   return (
     <UsernameForm

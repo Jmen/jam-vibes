@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { User } from "@supabase/supabase-js";
 import { createCookieClient } from "@/lib/supabase/clients/server";
+import { toInAppPath } from "@/lib/inAppPath";
 
 // A session whose account was created moments ago can only be a sign-up;
 // past this window the same redirect is a sign-in. Stateless on purpose:
@@ -21,7 +22,7 @@ function isBrandNewAccount(user: User | null): boolean {
 // cookie, then sends the user into the app.
 export async function GET(req: NextRequest) {
   const code = req.nextUrl.searchParams.get("code");
-  const next = req.nextUrl.searchParams.get("next") ?? "/";
+  const next = toInAppPath(req.nextUrl.searchParams.get("next"));
 
   if (code) {
     const supabase = await createCookieClient();

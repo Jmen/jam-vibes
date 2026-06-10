@@ -76,6 +76,28 @@ describe("GET /api/auth/callback", () => {
     expect(response.headers.get("location")).toBe(`${ORIGIN}/`);
   });
 
+  it("sanitizes an off-site next for a returning account", async () => {
+    exchangeCodeForSession.mockResolvedValue(sessionFor(minutesAgo(10)));
+
+    const response = await callback(
+      `?code=abc&next=${encodeURIComponent("https://evil.example")}`,
+    );
+
+    expect(response.headers.get("location")).toBe(`${ORIGIN}/`);
+  });
+
+  it("forwards only an in-app next to the username prompt", async () => {
+    exchangeCodeForSession.mockResolvedValue(sessionFor(minutesAgo(0)));
+
+    const response = await callback(
+      `?code=abc&next=${encodeURIComponent("/\\evil.example")}`,
+    );
+
+    expect(response.headers.get("location")).toBe(
+      `${ORIGIN}/auth/username?next=%2F`,
+    );
+  });
+
   it("treats a session without a user as a returning sign-in", async () => {
     exchangeCodeForSession.mockResolvedValue(sessionFor(null));
 
