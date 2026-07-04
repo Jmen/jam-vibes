@@ -11,7 +11,7 @@
     "prettier": "prettier --check \"**/*.{js,jsx,ts,tsx}\"",
     "prettier:fix": "prettier --write \"**/*.{js,jsx,ts,tsx}\"",
     "generate:openapi": "tsx scripts/generate-openapi.ts",
-    "supabase:start": "supabase start --workdir ./lib -x studio,meta,imgproxy,edge-runtime,vector",
+    "supabase:start": "supabase start --workdir ./lib -x studio,postgres-meta,imgproxy,edge-runtime,vector",
     "supabase:start:studio": "supabase start --workdir ./lib -x imgproxy,edge-runtime,vector",
     "supabase:stop": "supabase stop --workdir ./lib",
     "supabase:status": "supabase status --workdir ./lib",
