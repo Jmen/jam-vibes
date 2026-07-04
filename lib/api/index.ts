@@ -7,14 +7,14 @@ import {
   resetPasswordSchema,
   okResponseSchema,
   Credentials,
-  Register,
+  RegisterInput,
   ForgotPassword,
   ResetPassword,
 } from "@/app/api/auth/schema";
 import {
   profileResponseSchema,
   updateProfileSchema,
-  UpdateProfile,
+  UpdateProfileInput,
 } from "@/app/api/my/profile/schema";
 import {
   createJamSchema,
@@ -59,7 +59,7 @@ export class ApiClient {
   constructor(private readonly options: RequestOptions = {}) {}
 
   auth = {
-    register: (registration: Register) =>
+    register: (registration: RegisterInput) =>
       request(
         sessionResponseSchema,
         "/api/auth/register",
@@ -105,7 +105,7 @@ export class ApiClient {
       get: () =>
         request(profileResponseSchema, "/api/my/profile", {}, this.options),
 
-      update: (input: UpdateProfile) =>
+      update: (input: UpdateProfileInput) =>
         request(
           profileResponseSchema,
           "/api/my/profile",

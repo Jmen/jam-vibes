@@ -19,6 +19,7 @@ import { apiClient, ApiError } from "@/lib/api";
 import {
   updateProfileSchema,
   UpdateProfile,
+  UpdateProfileInput,
   Profile,
 } from "@/app/api/my/profile/schema";
 import { emitAuthChanged } from "@/lib/authEvents";
@@ -34,7 +35,9 @@ export function ProfileForm({ profile, onUpdated }: ProfileFormProps) {
   const [error, setError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
 
-  const form = useForm<UpdateProfile>({
+  // Fields hold unvalidated input; submission hands over the parsed,
+  // branded UpdateProfile
+  const form = useForm<UpdateProfileInput, unknown, UpdateProfile>({
     resolver: zodResolver(updateProfileSchema),
     defaultValues: { username: profile.username },
   });

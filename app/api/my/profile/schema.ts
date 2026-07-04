@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { usernameSchema } from "../../username/schema";
 
 export const profileResponseSchema = z.object({
   userId: z.string(),
@@ -9,17 +10,10 @@ export const profileResponseSchema = z.object({
 
 export type Profile = z.infer<typeof profileResponseSchema>;
 
-export const usernameSchema = z
-  .string()
-  .min(3, "Username must be at least 3 characters")
-  .max(30, "Username must be at most 30 characters")
-  .regex(
-    /^[a-zA-Z0-9_-]+$/,
-    "Username may only contain letters, numbers, hyphens and underscores",
-  );
-
 export const updateProfileSchema = z.object({
   username: usernameSchema,
 });
 
 export type UpdateProfile = z.infer<typeof updateProfileSchema>;
+// What callers hand in before validation brands it
+export type UpdateProfileInput = z.input<typeof updateProfileSchema>;

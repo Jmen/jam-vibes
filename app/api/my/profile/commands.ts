@@ -1,12 +1,8 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { ErrorCode, Result, ok, err } from "../../result";
+import { claimUsername, usernameTaken } from "../../username/db";
 import { Profile, UpdateProfile } from "./schema";
-import {
-  ProfileRow,
-  getProfileRow,
-  updateUsername,
-  updateAvatarPath,
-} from "./db";
+import { ProfileRow, getProfileRow, updateAvatarPath } from "./db";
 
 const MAX_AVATAR_BYTES = 5 * 1024 * 1024;
 const ALLOWED_IMAGE_TYPES = new Map([
@@ -57,13 +53,16 @@ export async function updateMyProfileCommand(
   update: UpdateProfile,
   supabase: SupabaseClient,
 ): Promise<Result<Profile>> {
-  const row = await updateUsername(userId, update.username, supabase);
+  const outcome = await claimUsername(userId, update.username, supabase);
 
-  if (row.error) {
-    return { error: row.error };
+  switch (outcome.kind) {
+    case "claimed":
+      return ok(toProfile(outcome.row, email, supabase));
+    case "taken":
+      return usernameTaken();
+    case "failed":
+      return { error: outcome.error };
   }
-
-  return ok(toProfile(row.data, email, supabase));
 }
 
 export async function uploadAvatarCommand(
