@@ -57,8 +57,31 @@ jobs:
           SUPABASE_AUTH_EXTERNAL_GOOGLE_SECRET=
           EOF
 
+      # public.ecr.aws rate-limits anonymous pulls per IP, and GitHub-hosted
+      # runners share IPs, so cold pulls fail intermittently. Cache the images
+      # keyed on the CLI version (which pins the image tags) so only the first
+      # run after a CLI bump touches the registry.
+      - name: Get Supabase CLI version
+        id: supabase-version
+        run: echo "version=$(npx supabase --version)" >> "$GITHUB_OUTPUT"
+
+      - name: Cache Supabase container images
+        id: supabase-images
+        uses: actions/cache@v4
+        with:
+          path: /tmp/supabase-images.tar
+          key: supabase-images-${{ steps.supabase-version.outputs.version }}
+
+      - name: Load Supabase images from cache
+        if: steps.supabase-images.outputs.cache-hit == 'true'
+        run: docker load -i /tmp/supabase-images.tar
+
       - name: Start Supabase stack
         run: npm run supabase:start
+
+      - name: Export Supabase images for cache
+        if: steps.supabase-images.outputs.cache-hit != 'true'
+        run: docker save -o /tmp/supabase-images.tar $(docker images --format '{{.Repository}}:{{.Tag}}' --filter 'reference=public.ecr.aws/supabase/*')
 
       - name: Create .env.local from Supabase status
         run: |
