@@ -2,14 +2,14 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { SupabaseClient } from "@supabase/supabase-js";
 import { registerCommand } from "../commands";
-import { isUsernameTaken, claimUsername } from "../../username/db";
-import { usernameSchema } from "../../username/schema";
+import { isUsernameTaken, claimUsername } from "@/lib/domain/username/db";
+import { usernameSchema } from "@/lib/domain/username/schema";
 import { ErrorCode, ok, err } from "../../result";
 
 // Keep the real usernameTaken(): the command's rejection is part of the
 // behaviour under test, only the database access is stubbed
-vi.mock("../../username/db", async (importOriginal) => ({
-  ...(await importOriginal<typeof import("../../username/db")>()),
+vi.mock("@/lib/domain/username/db", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@/lib/domain/username/db")>()),
   isUsernameTaken: vi.fn(),
   claimUsername: vi.fn(),
 }));

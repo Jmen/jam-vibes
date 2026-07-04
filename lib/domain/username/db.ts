@@ -1,6 +1,8 @@
 import { SupabaseClient } from "@supabase/supabase-js";
-import { ErrorCode, Result, ResultError, ok, err } from "../result";
-import { ProfileRow } from "../my/profile/db";
+// Interim imports from the delivery tree: Result and ProfileRow move into
+// the domain layer when the full inversion of app/api lands
+import { ErrorCode, Result, ResultError, ok, err } from "@/app/api/result";
+import { ProfileRow } from "@/app/api/my/profile/db";
 import { Username } from "./schema";
 
 // Claiming a username is first-come-first-served against the unique index

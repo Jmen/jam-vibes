@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { usernameSchema } from "../../username/schema";
+import { usernameSchema } from "@/lib/domain/username/schema";
 
 export const profileResponseSchema = z.object({
   userId: z.string(),
