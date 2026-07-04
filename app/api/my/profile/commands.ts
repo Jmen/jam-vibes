@@ -1,6 +1,6 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { ErrorCode, Result, ok, err } from "../../result";
-import { claimUsername, usernameTaken } from "../../username/db";
+import { claimUsername, usernameTaken } from "@/lib/domain/username/db";
 import { Profile, UpdateProfile } from "./schema";
 import { ProfileRow, getProfileRow, updateAvatarPath } from "./db";
 

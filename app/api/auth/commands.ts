@@ -1,7 +1,11 @@
 import { SupabaseClient, AuthError } from "@supabase/supabase-js";
 import { logger } from "@/lib/logger";
 import { ErrorCode, Result, ok, err } from "../result";
-import { isUsernameTaken, claimUsername, usernameTaken } from "../username/db";
+import {
+  isUsernameTaken,
+  claimUsername,
+  usernameTaken,
+} from "@/lib/domain/username/db";
 import {
   Credentials,
   Session,
