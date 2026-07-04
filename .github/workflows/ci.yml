@@ -60,9 +60,6 @@ jobs:
       - name: Start Supabase stack
         run: npm run supabase:start
 
-      - name: Reset database
-        run: npm run supabase:db:reset
-
       - name: Create .env.local from Supabase status
         run: |
           set -a
