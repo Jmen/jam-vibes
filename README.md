@@ -84,8 +84,9 @@ Layers (Growing Object-Oriented Software / Farley style):
 - **Acceptance** (`__test__/acceptance`): scenarios → DSL → API driver →
   real local stack. Covers auth, profiles, jams, audio, loops, invites and
   the security boundaries (visitor/member/owner).
-- **Unit** (`components/**/__test__`, `lib`): Testing Library with the typed
-  API client mocked; pure logic (e.g. the audio mixer) tested directly.
+- **Unit** (`components/**/__test__`, `app/**/__test__`, `lib`): Testing
+  Library with the typed API client mocked; route handlers with the Supabase
+  client mocked; pure logic (e.g. the audio mixer) tested directly.
 - **Smoke** (`__test__/smoke`): Playwright, kept to two journeys — the core
   register→create→upload→commit flow, and the two-browser realtime test —
   because browser tests are inherently the least reliable layer.
