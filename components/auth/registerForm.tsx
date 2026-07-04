@@ -14,7 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { apiClient, ApiError } from "@/lib/api";
-import { registerSchema, Register } from "@/app/api/auth/schema";
+import { registerSchema, Register, RegisterInput } from "@/app/api/auth/schema";
 
 interface RegisterFormProps {
   onSuccess: () => void;
@@ -23,7 +23,9 @@ interface RegisterFormProps {
 export function RegisterForm({ onSuccess }: RegisterFormProps) {
   const [error, setError] = useState<string | null>(null);
 
-  const form = useForm<Register>({
+  // Fields hold unvalidated input; submission hands over the parsed,
+  // branded Register
+  const form = useForm<RegisterInput, unknown, Register>({
     resolver: zodResolver(registerSchema),
     defaultValues: { email: "", password: "", username: "" },
   });

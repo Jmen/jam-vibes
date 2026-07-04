@@ -1,7 +1,7 @@
 import { SupabaseClient, AuthError } from "@supabase/supabase-js";
 import { logger } from "@/lib/logger";
 import { ErrorCode, Result, ok, err } from "../result";
-import { isUsernameTaken, updateUsername } from "../my/profile/db";
+import { isUsernameTaken, claimUsername, usernameTaken } from "../username/db";
 import {
   Credentials,
   Session,
@@ -58,11 +58,7 @@ export async function registerCommand(
     }
 
     if (taken.data) {
-      return err(
-        "username_taken",
-        "That username is already taken",
-        ErrorCode.CLIENT_ERROR,
-      );
+      return usernameTaken();
     }
   }
 
@@ -79,19 +75,22 @@ export async function registerCommand(
   }
 
   // Overwrite the generated username with the chosen one, using the new
-  // session. Losing the race to a concurrent signup is silently ignored:
-  // the generated name stands (see ADR 0001)
-  const overwrite = await updateUsername(
-    session.data.userId,
-    username,
-    supabase,
-  );
+  // session
+  const outcome = await claimUsername(session.data.userId, username, supabase);
 
-  if (overwrite.error && overwrite.error.code !== "username_taken") {
-    logger.warn(
-      { action: "register user", error: overwrite.error },
-      "keeping the generated username",
-    );
+  switch (outcome.kind) {
+    case "claimed":
+      break;
+    case "taken":
+      // Lost the race to a concurrent signup: silently ignored, the
+      // generated name stands (see ADR 0001)
+      break;
+    case "failed":
+      logger.warn(
+        { action: "register user", error: outcome.error },
+        "keeping the generated username",
+      );
+      break;
   }
 
   return session;

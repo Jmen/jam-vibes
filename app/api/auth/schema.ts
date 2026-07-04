@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { usernameSchema } from "../my/profile/schema";
+import { usernameSchema } from "../username/schema";
 
 export const credentialsSchema = z.object({
   email: z.email(),
@@ -16,6 +16,8 @@ export const registerSchema = credentialsSchema.extend({
 });
 
 export type Register = z.infer<typeof registerSchema>;
+// What callers hand in before validation brands the username
+export type RegisterInput = z.input<typeof registerSchema>;
 
 export const sessionResponseSchema = z.object({
   userId: z.string(),
