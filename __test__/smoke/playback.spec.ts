@@ -50,28 +50,19 @@ test("playing and switching loops keeps the console clean", async ({
 
   // Play loop 1, switch straight to loop 2 (stops loop 1), then stop
   await page.getByRole("button", { name: "Play loop 1" }).click();
-  await expect(
-    page.getByRole("button", { name: "Stop loop 1" }),
-  ).toBeVisible();
+  await expect(page.getByRole("button", { name: "Stop loop 1" })).toBeVisible();
 
   await page.getByRole("button", { name: "Play loop 2" }).click();
-  await expect(
-    page.getByRole("button", { name: "Stop loop 2" }),
-  ).toBeVisible();
+  await expect(page.getByRole("button", { name: "Stop loop 2" })).toBeVisible();
   // Switching must have stopped loop 1
-  await expect(
-    page.getByRole("button", { name: "Play loop 1" }),
-  ).toBeVisible();
+  await expect(page.getByRole("button", { name: "Play loop 1" })).toBeVisible();
 
   await page.getByRole("button", { name: "Stop loop 2" }).click();
-  await expect(
-    page.getByRole("button", { name: "Play loop 2" }),
-  ).toBeVisible();
+  await expect(page.getByRole("button", { name: "Play loop 2" })).toBeVisible();
 
   const reactWarnings = consoleErrors.filter(
     (text) =>
-      text.includes("Cannot update a component") ||
-      text.includes("Warning:"),
+      text.includes("Cannot update a component") || text.includes("Warning:"),
   );
   expect(reactWarnings).toEqual([]);
 });
