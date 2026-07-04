@@ -103,6 +103,12 @@ npm run dev
 Test commands: `npm run test:unit`, `test:acceptance` (needs dev server +
 stack), `test:smoke`, or everything via `npm run precommit`.
 
+Reviewing a PR: `npm run review:pr -- <number>` — checks out the branch,
+resets the local database to its migrations, and starts the dev server. The
+local stack is the review environment. When finished, `npm run review:done`
+returns to a clean main (deletes the PR branch, restores deps/schema if the
+PR changed them).
+
 Local services: app on `:3000`, Supabase API `:55321`, Postgres `:55322`,
 Mailpit (all local email) `:55324`.
 
