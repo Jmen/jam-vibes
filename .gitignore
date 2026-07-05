@@ -52,3 +52,6 @@ lib/.env
 
 # generated
 public/openapi.json
+
+# nWave workflow artifacts
+.nwave/
